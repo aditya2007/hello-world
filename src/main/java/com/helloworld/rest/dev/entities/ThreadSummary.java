@@ -11,10 +11,8 @@ import java.io.Serializable;
 @Setter
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Word implements Serializable {
-	//private static final long serialVersionUID = 3888538238586315559L;
+public class ThreadSummary implements Serializable {
 
-	private String paragraph;
-	private String uniqueWord;
-	private int occurrences;
+	private String threadInfo;
+	private String trace;
 }
