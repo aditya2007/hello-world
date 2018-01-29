@@ -1,6 +1,6 @@
 package com.helloworld.rest.dev.concurrent;
 
-import com.helloworld.rest.dev.entities.ThreadSummary;
+import com.helloworld.rest.dev.dto.ThreadSummary;
 import org.springframework.stereotype.Component;
 
 import java.lang.management.ManagementFactory;
