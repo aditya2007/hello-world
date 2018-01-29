@@ -3,14 +3,19 @@ package com.helloworld.rest.dev.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.helloworld.rest.dev.concurrent.AccountTransaction;
 import com.helloworld.rest.dev.concurrent.ThreadMonitor;
+import com.helloworld.rest.dev.dto.Post;
 import com.helloworld.rest.dev.dto.ThreadSummary;
 import com.helloworld.rest.dev.dto.Word;
 import com.helloworld.rest.dev.helper.HelloWorldHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +33,9 @@ public class HelloWorldController {
 
 	@Autowired
 	private ThreadMonitor threadMonitor;
+
+	@Value("${external.service.url}")
+	private String postResourceUrl;
 
 	@RequestMapping(method = RequestMethod.GET, value = "/hello",
 				    produces = MediaType.TEXT_PLAIN_VALUE)
@@ -126,6 +134,18 @@ public class HelloWorldController {
 			e.printStackTrace();
 		}
 		return threadMonitor.checkDeadLocks();
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/posts",
+					produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Post[]> getPosts(@RequestParam(required = false) Integer userId) {
+		RestTemplate restTemplate = new RestTemplate();
+		if (Objects.nonNull(userId) && userId > 0) {
+			postResourceUrl += "?userId=" + userId;
+		}
+		ResponseEntity<Post[]> response
+				= restTemplate.getForEntity(postResourceUrl, Post[].class);
+		return response;
 	}
 
 }
