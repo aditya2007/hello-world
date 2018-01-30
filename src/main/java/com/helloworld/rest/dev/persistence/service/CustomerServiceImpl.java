@@ -1,9 +1,10 @@
 package com.helloworld.rest.dev.persistence.service;
 
 import com.helloworld.rest.dev.dto.Customer;
-import com.helloworld.rest.dev.entities.CustomerEntity;
-import com.helloworld.rest.dev.entities.EnrolledServiceEntity;
+import com.helloworld.rest.dev.persistence.entities.CustomerEntity;
+import com.helloworld.rest.dev.persistence.entities.EnrolledServiceEntity;
 import com.helloworld.rest.dev.persistence.repository.CustomerRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired

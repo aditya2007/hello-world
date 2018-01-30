@@ -1,4 +1,4 @@
-package com.helloworld.rest.dev.entities;
+package com.helloworld.rest.dev.persistence.entities;
 
 import lombok.*;
 

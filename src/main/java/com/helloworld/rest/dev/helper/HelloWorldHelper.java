@@ -72,7 +72,7 @@ public class HelloWorldHelper {
 		return null;
 	}
 
-	public static void generateFibLoop(Integer n) {
+	private void generateFibLoop(Integer n) {
 		int prev = 0;
 		int current = 1;
 		int fib;

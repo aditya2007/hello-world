@@ -1,8 +1,9 @@
-package com.helloworld.rest.dev.config;
+package com.helloworld.rest.dev.persistence.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -19,10 +20,11 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
-@Configuration
-@PropertySource({"classpath:jpa-persistence.properties"})
+@SpringBootApplication
+@PropertySource("classpath:jpa-persistence.properties")
+@ComponentScan({ "com.helloworld.rest.dev.persistence" })
 @EnableJpaRepositories({ "com.helloworld.rest.dev.persistence" })
-public class HelloworldPersistenceConfig {
+public class TestApp {
 
 	@Autowired
 	Environment environment;
@@ -70,4 +72,5 @@ public class HelloworldPersistenceConfig {
 		properties.put("hibernate.hbm2ddl.auto", environment.getProperty("hibernate.hbm2ddl.auto"));
 		return properties;
 	}
+
 }
