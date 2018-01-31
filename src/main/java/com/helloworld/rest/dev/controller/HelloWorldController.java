@@ -7,10 +7,10 @@ import com.helloworld.rest.dev.dto.Post;
 import com.helloworld.rest.dev.dto.ThreadSummary;
 import com.helloworld.rest.dev.dto.Word;
 import com.helloworld.rest.dev.helper.HelloWorldHelper;
+import com.helloworld.rest.dev.persistence.service.ExternalService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +44,9 @@ public class HelloWorldController {
 
 	@Autowired
 	private ThreadMonitor threadMonitor;
+
+	@Autowired
+	private ExternalService externalService;
 
 	@Value("${external.service.url}")
 	private String postResourceUrl;
@@ -178,7 +181,6 @@ public class HelloWorldController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<ThreadSummary> monitorThread(@RequestParam(required = true,
 											defaultValue = "5000") long elapsedTime) {
-
 		try {
 			Thread.sleep(elapsedTime);
 		} catch (InterruptedException e) {
@@ -198,13 +200,13 @@ public class HelloWorldController {
 	@RequestMapping(method = RequestMethod.GET, value = "/posts",
 					produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Post[]> getPosts(@RequestParam(required = false) Integer userId) {
+
 		RestTemplate restTemplate = new RestTemplate();
 		if (Objects.nonNull(userId) && userId > 0) {
 			postResourceUrl += "?userId=" + userId;
 		}
-		ResponseEntity<Post[]> response
-				= restTemplate.getForEntity(postResourceUrl, Post[].class);
-		return response;
+		return restTemplate.getForEntity(postResourceUrl, Post[].class);
+		//return externalService.execute(postResourceUrl, Post[].class, userId).getBody();
 	}
 
 }

@@ -21,7 +21,6 @@ import java.util.Map;
 
 @Configuration
 @PropertySource({"classpath:jpa-persistence.properties"})
-@EnableJpaRepositories({ "com.helloworld.rest.dev.persistence" })
 public class HelloworldPersistenceConfig {
 
 	@Autowired

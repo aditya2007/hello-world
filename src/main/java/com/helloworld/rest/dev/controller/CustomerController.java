@@ -45,7 +45,7 @@ public class CustomerController {
 	@RequestMapping(method = RequestMethod.POST,
 					produces = MediaType.APPLICATION_JSON_VALUE)
 	public Customer createCustomer(@RequestBody Customer customer) {
-		return customerService.createCustomer(customer);
+		return  customerService.createCustomer(customer);
 	}
 
 	/**
