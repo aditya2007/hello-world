@@ -1,0 +1,15 @@
+[submodule "apm-alm"]
+	path = apm-alm
+	url = ./apm-alm
+[submodule "apm-asset"]
+	path = apm-asset
+	url = ./apm-asset/
+[submodule "apm-commons-logging"]
+	path = apm-commons-logging
+	url = ./apm-commons-logging/
+[submodule "apm-datasource"]
+	path = apm-datasource
+	url = ./apm-datasource/
+[submodule "asset-commons"]
+	path = asset-commons
+	url = ./asset-commons/
