@@ -1,0 +1,77 @@
+
+System.out.println("SQL Query for finAssetById :: " + query);
+
+hello world 
+==============
+curl -X GET \
+  'http://localhost:8080/v1?saySomeThing=Yoga?pretty' \
+  -H 'Cache-Control: no-cache' \
+  -H 'Content-Type: application/json'
+  
+  Create Unique words
+  ====================
+  curl -X POST \
+  http://localhost:8080/v1/uniqueWords \
+  -H 'Cache-Control: no-cache' \
+  -H 'Content-Type: application/json' \
+  -d '{
+	"paragraph" : "XYZ is a brand of ABC Cable Communications,LLC, a subsidiary of the ABC Corporation, used to market consumer cable television, internet, telephone, and wireless services provided by the company.ABC company always works towards consumer."
+}'
+
+Fibonacci by Recursion
+=======================
+curl -X GET \
+  'http://localhost:8080/v1/fibonacci?n=10' \
+  -H 'Cache-Control: no-cache' \
+  -H 'Content-Type: application/json' \
+  
+ Create Dead Lock
+ ===================
+ curl -X POST \
+  'http://localhost:8080/v1/deadlock?amount=10' \
+  -H 'Cache-Control: no-cache' \
+  
+  Monitor Threads
+  =================
+  curl -X GET \
+  'http://localhost:8080/v1/monitor?elapsedTime=5000' \
+  -H 'Cache-Control: no-cache' \
+  -H 'Content-Type: application/json' \
+
+ Query Customer by Id
+ ======================
+  curl -X GET \
+  http://localhost:8080/v1/customer/1 \
+  -H 'Cache-Control: no-cache' \
+  -H 'Content-Type: application/json' \
+  
+  Create Customer
+  ================
+  curl -X POST \
+  http://localhost:8080/v1/customer \
+  -H 'Cache-Control: no-cache' \
+  -H 'Content-Type: application/json' \
+  -d '{
+	"firstName" : "Yoganada",
+	"lastName" : "Govinda Gowda",
+	"enrolledServices" : [
+		"Internet",
+		"Cable"
+		]
+}'
+
+Delete Customer
+==================
+curl -X DELETE \
+  http://localhost:8080/v1/customer/1 \
+  -H 'Cache-Control: no-cache' \
+  -H 'Content-Type: application/json' \
+  
+RestTemplate External Service
+================================
+curl -X GET \
+  'http://localhost:8080/v1/posts?userId=2' \
+  -H 'Cache-Control: no-cache' \
+  -H 'Content-Type: application/json' \
+    
+   

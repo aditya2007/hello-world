@@ -12,6 +12,7 @@ import org.springframework.util.Assert;
 import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = TestApp.class)
@@ -66,13 +67,17 @@ public class CustomerServiceTest {
 	}
 
 	private Customer getCustomer() {
-		Customer customer = new Customer();
+		/*Customer customer = new Customer();
 		customer.setFirstName("Yoga");
-		customer.setLastName("Govinda Gowda");
+		customer.setLastName("Govinda Gowda");*/
 		Set<String> enrolledSvcs = new HashSet<>();
 		enrolledSvcs.add("Internet");
 		enrolledSvcs.add("Cable");
-		customer.setEnrolledServices(enrolledSvcs);
+		//customer.setEnrolledServices(enrolledSvcs);
+		Customer customer = Customer.builder()
+				.firstName("Yoga")
+				.lastName("Govinda Gowda")
+				.enrolledServices(enrolledSvcs).build();
 		return customer;
 	}
 }

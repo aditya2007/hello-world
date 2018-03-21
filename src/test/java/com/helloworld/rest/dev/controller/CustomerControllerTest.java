@@ -58,7 +58,7 @@ public class CustomerControllerTest extends AbstractControllerTest {
 	}
 
 	private Customer getCustomer(boolean isCreateOrQuery) {
-		Customer customer = new Customer();
+		/*Customer customer = new Customer();
 		if (isCreateOrQuery) {
 			customer.setCustomerId(1);
 		}
@@ -67,7 +67,21 @@ public class CustomerControllerTest extends AbstractControllerTest {
 		Set<String> enrolledSvcs = new HashSet<>();
 		enrolledSvcs.add("Internet");
 		enrolledSvcs.add("Cable");
-		customer.setEnrolledServices(enrolledSvcs);
+		customer.setEnrolledServices(enrolledSvcs);*/
+
+		Set<String> enrolledSvcs = new HashSet<>();
+		enrolledSvcs.add("Internet");
+		enrolledSvcs.add("Cable");
+		//customer.setEnrolledServices(enrolledSvcs);
+		Customer customer = Customer.builder()
+				.firstName("Yoga")
+				.lastName("Govinda Gowda")
+				.enrolledServices(enrolledSvcs).build();
+		if (isCreateOrQuery) {
+			customer.setCustomerId(1);
+		}
+
+
 		return customer;
 	}
 

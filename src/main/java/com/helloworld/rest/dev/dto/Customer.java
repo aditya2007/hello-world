@@ -1,6 +1,7 @@
 package com.helloworld.rest.dev.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,5 +19,13 @@ public class Customer implements Serializable {
 	private String firstName;
 	private String lastName;
 	private Set<String> enrolledServices;
+
+	@Builder
+	private Customer(Integer customerId, String firstName, String lastName, Set<String> enrolledServices) {
+		this.customerId = customerId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.enrolledServices = enrolledServices;
+	}
 
 }

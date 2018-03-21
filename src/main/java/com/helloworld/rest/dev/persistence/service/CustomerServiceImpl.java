@@ -1,5 +1,6 @@
 package com.helloworld.rest.dev.persistence.service;
 
+import com.helloworld.rest.dev.annotations.Mirror;
 import com.helloworld.rest.dev.dto.Customer;
 import com.helloworld.rest.dev.persistence.entities.CustomerEntity;
 import com.helloworld.rest.dev.persistence.entities.EnrolledServiceEntity;
@@ -7,8 +8,8 @@ import com.helloworld.rest.dev.persistence.repository.CustomerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ public class CustomerServiceImpl implements CustomerService {
 	CustomerRepository customerRepository;
 
 	@Transactional
-	public Customer createCustomer(Customer customer) {
+	public Customer createCustomer(@Mirror Customer customer) {
 		return toCustomer(customerRepository.save(toCustomerEntity(customer)));
 	}
 
@@ -39,12 +40,17 @@ public class CustomerServiceImpl implements CustomerService {
 			throw new RuntimeException("No Data Found");
 		}
 
-		Customer customer = new Customer();
-		customer.setCustomerId(entity.getId());
-		customer.setFirstName(entity.getFirstName());
-		customer.setLastName(entity.getLastName());
-		customer.setEnrolledServices(entity.getServices().stream()
-				.map(service -> service.getServiceName()).collect(Collectors.toSet()));
+		Customer customer = Customer.builder()
+				.customerId(entity.getId())
+				.firstName(entity.getFirstName())
+				.lastName(entity.getLastName())
+				.enrolledServices(entity.getServices().stream()
+						.map(service -> service.getServiceName()).collect(Collectors.toSet())).build();
+//		customer.setCustomerId(entity.getId());
+//		customer.setFirstName(entity.getFirstName());
+//		customer.setLastName(entity.getLastName());
+//		customer.setEnrolledServices(entity.getServices().stream()
+//				.map(service -> service.getServiceName()).collect(Collectors.toSet()));
 		return customer;
 	}
 

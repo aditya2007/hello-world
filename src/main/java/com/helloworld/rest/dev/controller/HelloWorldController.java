@@ -1,6 +1,10 @@
 package com.helloworld.rest.dev.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.helloworld.rest.dev.concurrent.AccountTransaction;
 import com.helloworld.rest.dev.concurrent.ThreadMonitor;
 import com.helloworld.rest.dev.dto.Post;
@@ -18,9 +22,12 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.io.*;
+import java.lang.reflect.Array;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * This class exposes following REST endpoints, to demonstrate some use cases.
@@ -90,6 +97,7 @@ public class HelloWorldController {
 		try {
 			String paraGraph = node.path("paragraph").asText();
 			List<JsonNode> jsonNodes = helper.getUniqueJsonNodes(paraGraph);
+			log.info("Before unique words response commit :: ");
 			return jsonNodes.toArray(new JsonNode[jsonNodes.size()]);
 		} catch (Exception jpe) {
 			log.error("Error occurred while creating unique words {} ", jpe);
@@ -132,7 +140,7 @@ public class HelloWorldController {
 	public Integer[] generateFibonacciSeries(@RequestParam(required = true,
 													defaultValue = "5") Integer n) {
 
-		if (n < Integer.MIN_VALUE || n > Integer.MAX_VALUE) {
+		if (n < 0 || n > Integer.MAX_VALUE) {
 			log.error("The given number is out of range Integer");
 			throw new RuntimeException(HttpStatus.BAD_REQUEST.getReasonPhrase());
 		}
@@ -209,4 +217,149 @@ public class HelloWorldController {
 		//return externalService.execute(postResourceUrl, Post[].class, userId).getBody();
 	}
 
+	/**
+	 * Workday problem:
+	 *
+	 * Make a GET REST call to get all the movies with Title "Spiderman", the response will be 10 per page
+	 * and the total pages will be 2. Get all the title sort them and return an array of titles.
+	 *
+	 * @param searchParam
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/movietitles",
+					produces = MediaType.APPLICATION_JSON_VALUE)
+	public String[] getMovieTitles(@RequestParam(required = true, defaultValue = "Spiderman") String searchParam) {
+		return getMovieTitlesFromExtSvc(searchParam);
+		//return getMovieTitlesfromFiles(searchParam);
+	}
+
+	private String[] getMovieTitlesFromExtSvc(String searchParam) {
+		List<String> movieTitles = new ArrayList<>();
+		try {
+			String moviePage1 = "https://jsonmock.hackerrank.com/api/movies/search?Title=" + searchParam + "&page=1";
+			String moviePage2 = "https://jsonmock.hackerrank.com/api/movies/search?Title=" + searchParam + "&page=2";
+			String[] movieUrls = {moviePage1, moviePage2};
+			for (String movie : movieUrls) {
+				URL url = new URL(movie);
+				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestMethod("GET");
+				conn.setRequestProperty("Accept", "application/json");
+				if (conn.getResponseCode() != 200) {
+					throw new RuntimeException("Failed : HTTP error code : "
+							+ conn.getResponseCode());
+				}
+				movieTitles.addAll(getMovieTitles(conn.getInputStream(), searchParam));
+			}
+
+			/*BufferedReader br = new BufferedReader(new InputStreamReader(
+					(conn.getInputStream())));
+
+			String output;
+			System.out.println("Output from Server .... \n");
+			while ((output = br.readLine()) != null) {
+				System.out.println(output);
+			}*/
+
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return sortMoviesTtitles(movieTitles);
+	}
+
+	private String[] getMovieTitlesfromFiles(String searchParam) {
+		String movie1 = "/json/input/movie_title_1.json";
+		String movie2 = "/json/input/movie_title_2.json";
+		String[] movies = {movie1, movie2};
+		List<String> movieTitles = new ArrayList<>();
+		for (String movie : movies) {
+			movieTitles.addAll(getMovieTitles(this.getClass().getResourceAsStream(movie), searchParam));
+		}
+		return sortMoviesTtitles(movieTitles);
+	}
+
+	private List<String> getMovieTitles(InputStream stream, String searchParam) {
+		List<String> movieTitles = new ArrayList<>();
+		try {
+			Gson gson = new Gson();
+			InputStreamReader reader = new InputStreamReader(stream);
+			JsonElement json = gson.fromJson(reader, JsonElement.class);
+			JsonObject jsonObj = json.getAsJsonObject();
+			for (JsonElement element : jsonObj.getAsJsonArray("data")) {
+				if (element.getAsJsonObject().get("Title").getAsString().contains(searchParam)) {
+					movieTitles.add(element.getAsJsonObject().get("Title").getAsString());
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return movieTitles;
+	}
+
+	private String[] sortMoviesTtitles(List<String> movieTitles) {
+		movieTitles.sort(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				return o1.compareTo(o2);
+			}
+		});
+		return movieTitles.toArray(new String[movieTitles.size()]);
+	}
+
+	public static void main(String[] args) {
+//		System.out.println(Arrays.toString(
+//				new HelloWorldController().getMovieTitlesfromFiles("Spiderman")));
+		HelloWorldController hello = new HelloWorldController();
+		System.out.println(hello.jsonEncode(null));
+		System.out.println(hello.jsonEncode("abc"));
+		System.out.println(hello.jsonEncode(123));
+		System.out.println(hello.jsonEncode(false));
+		List<Object> list = new ArrayList<>();
+		list.add(111);
+		list.add("xyz");
+		list.add(100.10);
+		list.add(true);
+		System.out.println(hello.jsonEncode(list));
+		List<Object> nestedList = new ArrayList<>();
+		nestedList.add(50);
+		nestedList.add("pqr");
+		nestedList.add(list);
+		nestedList.add(77.99);
+		nestedList.add(false);
+		System.out.println(hello.jsonEncode(nestedList));
+		int[] nums = {1,2,3,4};
+		System.out.println(hello.jsonEncode(nums));
+	}
+
+	/**
+	 * NerdWallet :
+	 * Write a function to encode a gievn object to an encoded json
+	 *
+	 * @param obj
+	 * @return
+	 */
+	private String jsonEncode(Object obj) {
+		if (obj == null) {
+			return "null";
+		} else if (obj instanceof String) {
+			return "\"" + obj + "\"";
+		} else if (obj instanceof Number) {
+			return "" + obj;
+		} else if (obj instanceof Boolean) {
+			return "" + obj;
+		} else if(obj instanceof List) {
+			StringBuilder builder = new StringBuilder("[");
+			for (int i = 0; i < ((List) obj).size(); i++) {
+				builder.append(jsonEncode(((List)obj).get(i))).append(",");
+			}
+			builder.append("]");
+			return builder.toString().replace(",]", "]");
+		} else if(obj instanceof Array) { // This needs to check
+			System.out.println("This is Array instance");
+		} else if (obj instanceof Map){ // Need to implement
+			System.out.println("This is Map instance");
+		}
+		return obj + "";
+	}
 }
