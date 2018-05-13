@@ -30,10 +30,6 @@ public class SerializerApp {
 		System.out.println("Serialized Data >>>>>>> " + serialized);
 		Item retItem = app.MAPPER.readValue(serialized, Item.class);
 		System.out.println("Deserialized Data <<<<<<<< " + retItem);*/
-		String regExpr  = "[a-z]{1,6}[_]{0,1}[0-9]{0,4}@hackerrank.com";
-		String email = "yogana@hackerranks.com";
-		System.out.println(email.matches(regExpr));
-
 	}
 
 	public class ItemSerializer extends StdSerializer<Item> {
